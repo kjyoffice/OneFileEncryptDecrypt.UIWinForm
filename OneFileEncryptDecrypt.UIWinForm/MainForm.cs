@@ -13,6 +13,7 @@ using Microsoft.Web.WebView2.WinForms;
 using Microsoft.Web.WebView2.Core;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Reflection;
 
 namespace OneFileEncryptDecrypt.UIWinForm
 {
@@ -115,7 +116,7 @@ namespace OneFileEncryptDecrypt.UIWinForm
         private string WebViewAction_GetLatestCryptoFileList()
         {
             var lcfiList = this.LCFIList.Where(x => (x.IsAllow == true)).Reverse().Take(20).ToList();
-            var result = Newtonsoft.Json.JsonConvert.SerializeObject(lcfiList);
+            var result = this.JsonSerializeObject(lcfiList);
 
             return result;
         }
@@ -339,7 +340,7 @@ namespace OneFileEncryptDecrypt.UIWinForm
         private void WebViewPostWebMessage(XModel.WebViewPostMessageOrder wvpmo)
         {
             var cwv = this.MainWebBrowser.CoreWebView2;
-            var jsonText = Newtonsoft.Json.JsonConvert.SerializeObject(wvpmo);
+            var jsonText = this.JsonSerializeObject(wvpmo);
 
             cwv.PostWebMessageAsJson(jsonText);
         }
@@ -408,6 +409,17 @@ namespace OneFileEncryptDecrypt.UIWinForm
             timerX.Start();
         }
 
+        private string JsonSerializeObject(object data)
+        {
+            return Newtonsoft.Json.JsonConvert.SerializeObject(
+                data,
+                new Newtonsoft.Json.JsonSerializerSettings()
+                {
+                    Formatting = Newtonsoft.Json.Formatting.Indented
+                }
+            );
+        }
+
         // -------------------------------------------------
 
         public MainForm(XModel.ProcessSupportX psx)
@@ -464,7 +476,7 @@ namespace OneFileEncryptDecrypt.UIWinForm
         {
             var psx = this.PSX;
             var rlcfiList = this.LCFIList.Where(x => (x.IsAllow == true)).Select(x => new XModel.RawLatestCryptoFileItem(x)).ToList();
-            var jsonText = Newtonsoft.Json.JsonConvert.SerializeObject(rlcfiList);
+            var jsonText = this.JsonSerializeObject(rlcfiList);
 
             // 현재 리스트의 파일정보 기록
             File.WriteAllText(psx.LatestCryptoFilePath, jsonText, Encoding.UTF8);
