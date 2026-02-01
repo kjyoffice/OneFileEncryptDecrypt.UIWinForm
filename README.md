@@ -78,7 +78,9 @@ And VisualStudio load solution build and debug.
     
 [typescriptlang.org - Globally Installing TypeScript](https://www.typescriptlang.org/download/)
 
+## External Support
 
+- [Icon - favicon.io](https://www.favicon.io)
 
 
 
