@@ -20,13 +20,13 @@ VisualStudio 2022 or 2026
 
 ### 3. Open solution
 
-- VisualStudio 2022 
-
-      OneFileEncryptDecrypt.UIWinForm.sln
-
 - VisualStudio 2026
 
       OneFileEncryptDecrypt.UIWinForm.slnx
+
+- VisualStudio 2022 
+
+      OneFileEncryptDecrypt.UIWinForm.sln
 
 ### 3. Build
 
