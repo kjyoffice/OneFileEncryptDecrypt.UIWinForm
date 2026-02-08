@@ -58,7 +58,7 @@ Node `OFEDAppPath` value is `Require(Dependency) App` build binary `OneFileEncry
 
 ### 7. Execute
 
-### 😁
+Execute `OneFileEncryptDecrypt.UIWinForm.exe`
 
 ## Code modify time
 
@@ -78,7 +78,9 @@ And VisualStudio load solution build and debug.
     
 [typescriptlang.org - Globally Installing TypeScript](https://www.typescriptlang.org/download/)
 
+## External Support
 
+- [Icon - favicon.io](https://www.favicon.io)
 
 
 
