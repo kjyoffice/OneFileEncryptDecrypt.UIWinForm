@@ -58,7 +58,7 @@ Node `OFEDAppPath` value is `Require(Dependency) App` build binary `OneFileEncry
 
 ### 7. Execute
 
-### 😁
+Execute `OneFileEncryptDecrypt.UIWinForm.exe`
 
 ## Code modify time
 
