@@ -101,9 +101,9 @@ namespace OneFileEncryptDecrypt.UIWinForm
             }
         }
 
-        private string OFEDExecute_EncryptArguments(string cryptoPassword, string filePath)
+        private string OFEDExecute_EncryptArguments(string cryptoPassword, string cryptoMode, string filePath)
         {
-            return $"encrypt --password \"{cryptoPassword}\" --file \"{filePath}\" --isuix true";
+            return $"encrypt --password \"{cryptoPassword}\" --file \"{filePath}\" --mode \"{cryptoMode}\" --isuix true";
         }
 
         private string OFEDExecute_DecryptArguments(string cryptoPassword, string filePath)
@@ -147,7 +147,7 @@ namespace OneFileEncryptDecrypt.UIWinForm
             return result;
         }
 
-        private string WebViewAction_CryptoLatestFile(string fileID, bool isEncrypt, string cryptoPassword)
+        private string WebViewAction_CryptoLatestFile(string fileID, bool isEncrypt, string cryptoPassword, string cryptoMode)
         {
             var result = string.Empty;
 
@@ -176,7 +176,7 @@ namespace OneFileEncryptDecrypt.UIWinForm
                             // 여기까지 온거면 작업에서 성공이던 실패던 관계없이 일단 리스트에서는 뺀다
                             icfi.ChangeNotAllow();
 
-                            this.WebViewAction_CryptoLatestFile_RunProcess(icfi, isEncrypt, cryptoPassword);
+                            this.WebViewAction_CryptoLatestFile_RunProcess(icfi, isEncrypt, cryptoPassword, cryptoMode);
 
                             result = "OK";
                         }
@@ -203,7 +203,7 @@ namespace OneFileEncryptDecrypt.UIWinForm
             return result;
         }
 
-        private void WebViewAction_CryptoLatestFile_RunProcess(XModel.LatestCryptoFileItem icfi, bool isEncrypt, string cryptoPassword)
+        private void WebViewAction_CryptoLatestFile_RunProcess(XModel.LatestCryptoFileItem icfi, bool isEncrypt, string cryptoPassword, string cryptoMode)
         {
             var timerX = new Timer();
             timerX.Interval = 200;
@@ -214,7 +214,7 @@ namespace OneFileEncryptDecrypt.UIWinForm
 
                 var appExeArgs = (
                     (isEncrypt == true) ? 
-                    this.OFEDExecute_EncryptArguments(cryptoPassword, icfi.FilePath) : 
+                    this.OFEDExecute_EncryptArguments(cryptoPassword, cryptoMode, icfi.FilePath) : 
                     this.OFEDExecute_DecryptArguments(cryptoPassword, icfi.FilePath)
                 );
                 
@@ -292,7 +292,7 @@ namespace OneFileEncryptDecrypt.UIWinForm
             timerX.Start();
         }
 
-        private void WebViewAction_NewCryptoStartProcess(string filePath, bool isEncrypt, string cryptoPassword)
+        private void WebViewAction_NewCryptoStartProcess(string filePath, bool isEncrypt, string cryptoPassword, string cryptoMode)
         {
             var timerX = new Timer();
             timerX.Interval = 200;
@@ -308,7 +308,7 @@ namespace OneFileEncryptDecrypt.UIWinForm
                 {
                     var appExeArgs = (
                         (isEncrypt == true) ?
-                        this.OFEDExecute_EncryptArguments(cryptoPassword, filePath) :
+                        this.OFEDExecute_EncryptArguments(cryptoPassword, cryptoMode, filePath) :
                         this.OFEDExecute_DecryptArguments(cryptoPassword, filePath)
                     );
 

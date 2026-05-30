@@ -16,9 +16,9 @@ namespace OneFileEncryptDecrypt.UIWinForm.XModel
         private ProcessSupportX PSX { get; set; }
         private Func<string> GetLatestCryptoFileListAction { get; set; }
         private Func<string, string> DeleteLatestCryptoFileAction { get; set; }
-        private Func<string, bool, string, string> CryptoLatestFileAction { get; set; }
+        private Func<string, bool, string, string, string> CryptoLatestFileAction { get; set; }
         private Action<bool> NewCryptoNowAction { get; set; }
-        private Action<string, bool, string> NewCryptoStartProcessAction { get; set; }
+        private Action<string, bool, string, string> NewCryptoStartProcessAction { get; set; }
         private Func<string> GetSavedCryptoPasswordAction { get; set; }
         private Action<string> SetSaveCryptoPasswordAction { get; set; }
         private Func<string, bool, string> OpenFileOrDirectoryAction { get; set; }
@@ -29,9 +29,9 @@ namespace OneFileEncryptDecrypt.UIWinForm.XModel
             ProcessSupportX psx, 
             Func<string> getLatestCryptoFileListAction, 
             Func<string, string> deleteLatestCryptoFileAction, 
-            Func<string, bool, string, string> cryptoLatestFileAction, 
+            Func<string, bool, string, string, string> cryptoLatestFileAction, 
             Action<bool> newCryptoNowAction,
-            Action<string, bool, string> newCryptoStartProcessAction,
+            Action<string, bool, string, string> newCryptoStartProcessAction,
             Func<string> getSavedCryptoPasswordAction,
             Action<string> setSaveCryptoPasswordAction,
             Func<string, bool, string> openFileOrDirectoryAction
@@ -63,9 +63,9 @@ namespace OneFileEncryptDecrypt.UIWinForm.XModel
             return this.DeleteLatestCryptoFileAction(fileID);
         }
 
-        public string CryptoLatestFile(string fileID, bool isEncrypt, string cryptoPassword)
+        public string CryptoLatestFile(string fileID, bool isEncrypt, string cryptoPassword, string cryptoMode)
         {
-            return this.CryptoLatestFileAction(fileID, isEncrypt, cryptoPassword);
+            return this.CryptoLatestFileAction(fileID, isEncrypt, cryptoPassword, cryptoMode);
         }
 
         public void NewCryptoNow(bool isEncrypt)
@@ -73,9 +73,9 @@ namespace OneFileEncryptDecrypt.UIWinForm.XModel
             this.NewCryptoNowAction(isEncrypt);
         }
 
-        public void NewCryptoStartProcess(string filePath, bool isEncrypt, string cryptoPassword)
+        public void NewCryptoStartProcess(string filePath, bool isEncrypt, string cryptoPassword, string cryptoMode)
         {
-            this.NewCryptoStartProcessAction(filePath, isEncrypt, cryptoPassword);
+            this.NewCryptoStartProcessAction(filePath, isEncrypt, cryptoPassword, cryptoMode);
         }
 
         public string GetSavedCryptoPassword()

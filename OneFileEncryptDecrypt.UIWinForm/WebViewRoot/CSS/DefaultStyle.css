@@ -90,7 +90,9 @@ a { color:var(--ofed-defaultfontcolor); text-decoration:none; }
 .simpledialog .contentbox .inputbox .contentx .titlex { width:100%; text-align:center; }
 .simpledialog .contentbox .inputbox .contentx .inputx input { width:100%; padding:5px; margin:10px 0px; text-align:center; background-color:var(--ofed-sd-mainbgcolor); border:1px solid var(--ofed-sd-bordercolor); border-radius:5px; }
 .simpledialog .contentbox .inputbox .contentx .inputx input.invalidsign { border:1px solid var(--ofed-error-bordercolor); }
+.simpledialog .contentbox .inputbox .contentx .selectboxx select { width:100%; padding:5px 10px; border:1px solid var(--ofed-sd-bordercolor); border-radius:5px; background-color:var(--ofed-sd-mainbgcolor); appearance:none; margin-right:10px; background-repeat: no-repeat; background-position-x: 100%; background-position-y: 50%; background-image: url("data:image/svg+xml;utf8,<svg fill='black' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>"); }
 .simpledialog .contentbox .inputbox .contentx .subaction { width:100%; text-align:left; }
+.simpledialog .contentbox .inputbox .contentx .subactionleftright { width: 100%; display: flex; flex-direction: row; align-items: center; justify-content: space-between; }
 .simpledialog .contentbox .inputbox .contentx .notifymessage { width:100%; color:var(--ofed-warning-color); text-align:center; margin-top:10px; }
 .simpledialog .actionbox { padding:10px; text-align:center; background-color:var(--ofed-sd-headfootbgcolor); border-top:1px solid var(--ofed-sd-bordercolor); border-bottom-left-radius: 5px; border-bottom-right-radius: 5px; }
 .simpledialog .actionbox button { width:150px; padding:5px;  border-radius:5px; cursor:pointer; }

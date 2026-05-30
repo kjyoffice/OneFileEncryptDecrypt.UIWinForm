@@ -90,9 +90,9 @@ const NewCryptoX = {
             const md = dataX.mainData;
             const confirmMsgX = ((md.isEncrypt == true) ? msgSetX.EncryptFileQuestion : msgSetX.DecryptFileQuestion);
             const passwordMsgX = ((md.isEncrypt == true) ? msgSetX.PleaseInputEncryptPassword : msgSetX.PleaseInputDecryptPassword);
-            SimpleDialogX.PasswordBox(confirmMsgX, passwordMsgX, async function (isConfirm, cryptoPassword) {
+            SimpleDialogX.PasswordBox(md.isEncrypt, confirmMsgX, passwordMsgX, async function (isConfirm, cryptoPassword, cryptoMode) {
                 if (isConfirm == true) {
-                    await WVHandShakeX().NewCryptoStartProcess(md.filePath, md.isEncrypt, cryptoPassword);
+                    await WVHandShakeX().NewCryptoStartProcess(md.filePath, md.isEncrypt, cryptoPassword, cryptoMode);
                 }
                 else {
                     DefaultPageBlindX.HideNow();
@@ -179,10 +179,10 @@ const LatestListX = {
             const msgSetX = ProcessX.MessageSetX;
             const confirmMsgX = ((isEncrypt == true) ? msgSetX.EncryptFileQuestion : msgSetX.DecryptFileQuestion);
             const passwordMsgX = ((isEncrypt == true) ? msgSetX.PleaseInputEncryptPassword : msgSetX.PleaseInputDecryptPassword);
-            SimpleDialogX.PasswordBox(confirmMsgX, passwordMsgX, async function (isConfirm, cryptoPassword) {
+            SimpleDialogX.PasswordBox(isEncrypt, confirmMsgX, passwordMsgX, async function (isConfirm, cryptoPassword, cryptoMode) {
                 if (isConfirm == true) {
                     DefaultPageBlindX.ShowNow();
-                    const delResult = await WVHandShakeX().CryptoLatestFile(fileID, isEncrypt, cryptoPassword);
+                    const delResult = await WVHandShakeX().CryptoLatestFile(fileID, isEncrypt, cryptoPassword, cryptoMode);
                     if (delResult == 'OK') {
                     }
                     else {
@@ -321,12 +321,20 @@ const SimpleDialogX = {
         });
         SimpleDialogX.ShowNow(tagID);
     },
-    PasswordBox: async function (message, passwordMsg, actionCallbackFN) {
+    PasswordBox: async function (isEncrypt, message, passwordMsg, actionCallbackFN) {
         const msgSetX = ProcessX.MessageSetX;
         const bodyX = document.getElementsByTagName('BODY')[0];
         const tagID = ('passworddialog' + Math.random().toString().replace('.', ''));
         const savedPWD = ((ProcessX.IsSavePasswordBoxInPassword == true) ? await WVHandShakeX().GetSavedCryptoPassword() : '');
         const checkedSign = ((ProcessX.IsSavePasswordBoxInPassword == true) ? 'checked="checked"' : '');
+        const cryptoModeHTMLX = ((isEncrypt == true) ?
+            `
+                <select name="cryptomode" class="cryptomode">
+                    <option value="AES256CBC">AES256 CBC</option>
+                    <option value="AES256GCM">AES256 GCM</option>
+                </select>            
+            ` :
+            '');
         const htmlX = `
             <div id="${tagID}blind" class="pageblind"></div>
             <div id="${tagID}" class="simpledialog passworddialog">
@@ -337,8 +345,11 @@ const SimpleDialogX = {
                         <div class="contentx">
                             <div class="titlex">${passwordMsg}</div>
                             <div class="inputx"><input type="password" name="cryptopassword" value="${savedPWD}" class="cryptopassword" /></div>
-                            <div class="subaction">
-                                <label><input type="checkbox" name="savepassword" class="savepassword" onclick="SimpleDialogX.PasswordBox_SavePasswordAlertBox(this);" ${checkedSign} /> ${msgSetX.SavePasswordTitle}</label>
+                            <div class="subactionleftright">
+                                <div class="leftbox">
+                                    <label><input type="checkbox" name="savepassword" class="savepassword" onclick="SimpleDialogX.PasswordBox_SavePasswordAlertBox(this);" ${checkedSign} /> ${msgSetX.SavePasswordTitle}</label>
+                                </div>
+                                <div class="rightbox selectboxx">${cryptoModeHTMLX}</div>
                             </div>
                             <div class="notifymessage"></div>
                         </div>
@@ -358,6 +369,8 @@ const SimpleDialogX = {
             const cryptoPWD = sdX.querySelector('.cryptopassword');
             const notifyMsg = sdX.querySelector('.notifymessage');
             const savePWD = sdX.querySelector('.savepassword');
+            const cryptoMode = sdX.querySelector('.cryptomode');
+            const cryptoModeValue = ((cryptoMode != null) ? cryptoMode.options[cryptoMode.selectedIndex].value : '');
             cryptoPWD.classList.remove('invalidsign');
             cryptoPWD.value = cryptoPWD.value.trim();
             notifyMsg.innerText = '';
@@ -372,12 +385,12 @@ const SimpleDialogX = {
                 }
                 ProcessX.IsSavePasswordBoxInPassword = savePWD.checked;
                 SimpleDialogX.HideNow(tagID);
-                actionCallbackFN(true, cryptoPWD.value);
+                actionCallbackFN(true, cryptoPWD.value, cryptoModeValue);
             }
         });
         cencelBtn.addEventListener('click', function (e) {
             SimpleDialogX.HideNow(tagID);
-            actionCallbackFN(false, '');
+            actionCallbackFN(false, '', '');
         });
         SimpleDialogX.ShowNow(tagID);
     },

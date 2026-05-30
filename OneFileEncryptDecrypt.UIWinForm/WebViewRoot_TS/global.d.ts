@@ -12,9 +12,9 @@ declare global {
                         HelloMessage(name:string) : string;
                         GetLatestCryptoFileList() : string;
                         DeleteLatestCryptoFile(fileID:string) : string;
-                        CryptoLatestFile(fileID:string, isEncrypt:boolean, cryptoPassword:string) : string;
+                        CryptoLatestFile(fileID:string, isEncrypt:boolean, cryptoPassword:string, cryptoMode:string) : string;
                         NewCryptoNow(isEncrypt:boolean) : void;
-                        NewCryptoStartProcess(filePath:string, isEncrypt:boolean, cryptoPassword:string) : void;
+                        NewCryptoStartProcess(filePath:string, isEncrypt:boolean, cryptoPassword:string, cryptoMode:string) : void;
                         GetSavedCryptoPassword():string;
                         SetSaveCryptoPassword(cryptoPassword:string):void;
                         OpenFileOrDirectory(filePath:string, isOpenFile:boolean) : string;

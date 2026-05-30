@@ -6,7 +6,7 @@
 };
 
 type SimpleDialogXConfirmFN = (isConfirm:boolean) => void;
-type CryptoPasswordDialogXConfirmFN = (isConfirm:boolean, cryptoPassword:string) => void;
+type CryptoPasswordDialogXConfirmFN = (isConfirm:boolean, cryptoPassword:string, cryptoMode:string) => void;
 type EventParameterFNType = (e:Event) => void;
 
 type ProcessXType = {
@@ -183,12 +183,13 @@ const NewCryptoX = {
             const passwordMsgX = ((md.isEncrypt == true) ? msgSetX.PleaseInputEncryptPassword : msgSetX.PleaseInputDecryptPassword);
 
             SimpleDialogX.PasswordBox(
+                md.isEncrypt,
                 confirmMsgX,
                 passwordMsgX,
-                async function(isConfirm:boolean, cryptoPassword:string) : Promise<void> {
+                async function(isConfirm:boolean, cryptoPassword:string, cryptoMode:string) : Promise<void> {
                     if(isConfirm == true) {
                         // 이제 실제 프로그램 실행시키러 콜
-                        await WVHandShakeX().NewCryptoStartProcess(md.filePath, md.isEncrypt, cryptoPassword);
+                        await WVHandShakeX().NewCryptoStartProcess(md.filePath, md.isEncrypt, cryptoPassword, cryptoMode);
                     } else {
                         DefaultPageBlindX.HideNow();                
                     }
@@ -296,13 +297,14 @@ const LatestListX = {
             const passwordMsgX = ((isEncrypt == true) ? msgSetX.PleaseInputEncryptPassword : msgSetX.PleaseInputDecryptPassword);
 
             SimpleDialogX.PasswordBox(
+                isEncrypt,
                 confirmMsgX,
                 passwordMsgX,
-                async function(isConfirm:boolean, cryptoPassword:string) : Promise<void> {
+                async function(isConfirm:boolean, cryptoPassword:string, cryptoMode:string) : Promise<void> {
                     if(isConfirm == true) {
                         DefaultPageBlindX.ShowNow();
 
-                        const delResult = await WVHandShakeX().CryptoLatestFile(fileID, isEncrypt, cryptoPassword);
+                        const delResult = await WVHandShakeX().CryptoLatestFile(fileID, isEncrypt, cryptoPassword, cryptoMode);
 
                         if(delResult == 'OK') {                    
                             // 뭐가 됐던 일단 프로그램은 실행됐음, 
@@ -474,12 +476,22 @@ const SimpleDialogX = {
 
         SimpleDialogX.ShowNow(tagID);
     },
-    PasswordBox : async function(message:string|undefined, passwordMsg:string, actionCallbackFN:CryptoPasswordDialogXConfirmFN) : Promise<void> {
+    PasswordBox : async function(isEncrypt:boolean, message:string|undefined, passwordMsg:string, actionCallbackFN:CryptoPasswordDialogXConfirmFN) : Promise<void> {
         const msgSetX = ProcessX.MessageSetX;
         const bodyX = (document.getElementsByTagName('BODY')[0] as HTMLBodyElement);
         const tagID = ('passworddialog' + Math.random().toString().replace('.', ''));
         const savedPWD = ((ProcessX.IsSavePasswordBoxInPassword == true) ? await WVHandShakeX().GetSavedCryptoPassword() : '')
         const checkedSign = ((ProcessX.IsSavePasswordBoxInPassword == true) ? 'checked="checked"' : '');
+        const cryptoModeHTMLX = (
+            (isEncrypt == true) ?
+            `
+                <select name="cryptomode" class="cryptomode">
+                    <option value="AES256CBC">AES256 CBC</option>
+                    <option value="AES256GCM">AES256 GCM</option>
+                </select>            
+            ` : 
+            ''
+        );
         const htmlX = `
             <div id="${tagID}blind" class="pageblind"></div>
             <div id="${tagID}" class="simpledialog passworddialog">
@@ -490,8 +502,11 @@ const SimpleDialogX = {
                         <div class="contentx">
                             <div class="titlex">${passwordMsg}</div>
                             <div class="inputx"><input type="password" name="cryptopassword" value="${savedPWD}" class="cryptopassword" /></div>
-                            <div class="subaction">
-                                <label><input type="checkbox" name="savepassword" class="savepassword" onclick="SimpleDialogX.PasswordBox_SavePasswordAlertBox(this);" ${checkedSign} /> ${msgSetX.SavePasswordTitle}</label>
+                            <div class="subactionleftright">
+                                <div class="leftbox">
+                                    <label><input type="checkbox" name="savepassword" class="savepassword" onclick="SimpleDialogX.PasswordBox_SavePasswordAlertBox(this);" ${checkedSign} /> ${msgSetX.SavePasswordTitle}</label>
+                                </div>
+                                <div class="rightbox selectboxx">${cryptoModeHTMLX}</div>
                             </div>
                             <div class="notifymessage"></div>
                         </div>
@@ -516,6 +531,8 @@ const SimpleDialogX = {
                 const cryptoPWD = (sdX.querySelector('.cryptopassword') as HTMLInputElement);
                 const notifyMsg = (sdX.querySelector('.notifymessage') as HTMLDivElement);
                 const savePWD = (sdX.querySelector('.savepassword') as HTMLInputElement);
+                const cryptoMode = (sdX.querySelector('.cryptomode') as HTMLSelectElement);
+                const cryptoModeValue = ((cryptoMode != null) ? cryptoMode.options[cryptoMode.selectedIndex].value : '');
 
                 cryptoPWD.classList.remove('invalidsign');
                 cryptoPWD.value = cryptoPWD.value.trim();
@@ -532,7 +549,7 @@ const SimpleDialogX = {
 
                     ProcessX.IsSavePasswordBoxInPassword = savePWD.checked;
                     SimpleDialogX.HideNow(tagID);
-                    actionCallbackFN(true, cryptoPWD.value);
+                    actionCallbackFN(true, cryptoPWD.value, cryptoModeValue);
                 }
             }
         );
@@ -541,7 +558,7 @@ const SimpleDialogX = {
             'click', 
             function(e:Event) : void {
                 SimpleDialogX.HideNow(tagID);
-                actionCallbackFN(false, '');
+                actionCallbackFN(false, '', '');
             }
         );        
 
